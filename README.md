@@ -74,7 +74,7 @@ Uber JVM Profiler supports sending metrics to Kafka. For example,
 ```
 java -javaagent:target/jvm-profiler-1.0.0.jar=configProvider=com.uber.profiling.YamlConfigProvider,configFile=config.yaml -cp target/jvm-profiler-1.0.0.jar com.uber.profiling.examples.HelloWorldApplication
 ```
-It will send metrics to InfluxDB. Just chAnge the InfluxDB parameters in `config.yaml` file. Also you can find Grafana dashboard in `dashboards` folder in this repository.
+It will send metrics to InfluxDB. Just change the InfluxDB parameters in `config.yaml` file. Also you can find Grafana dashboard in `dashboards` folder in this repository.
 
 ## More Details
 
