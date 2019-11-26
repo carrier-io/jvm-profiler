@@ -1,0 +1,13 @@
+#reporter: com.uber.profiling.reporters.FileOutputReporter
+reporter: com.uber.profiling.reporters.InfluxDBOutputReporter
+tag: DurationProfileExample
+metricInterval: 1000
+durationProfiling: com.uber.profiling.examples.*
+#argumentProfiling: com.uber.profiling.examples.HelloWorldApplication.publicSleepMethod.1
+sampleInterval: 100
+#outputDir: /Users/ievhendieriaka/Documents/Development/jvm-profiler/reports
+influxdb.host: localhost
+influxdb.port: 8086
+influxdb.database: profiling
+influxdb.username:
+influxdb.password:

@@ -27,7 +27,7 @@ public class HelloWorldApplication {
      * -javaagent:target/uber-java-agent-0.0.1-jar-with-dependencies.jar=reporter=com.uber.profiling.reporters.ConsoleOutputReporter,tag=tag1,metricInterval=10000,durationProfiling=com.uber.profiling.examples.HelloWorldApplication.*
      */
     public static void main(String[] args) throws Throwable {
-        long totalRunningMillis = 1 * 60 * 1000;
+        long totalRunningMillis = 5 * 60 * 1000;
         long sleepMillis = 1000;
 
         if (args.length >= 1) {
@@ -42,6 +42,7 @@ public class HelloWorldApplication {
         long lastPrintMillis = 0;
 
         Random random = new Random();
+        AnotherExample ex = new AnotherExample();
 
         while (System.currentTimeMillis() - startMillis < totalRunningMillis) {
             if (System.currentTimeMillis() - lastPrintMillis >= 10000) {
@@ -50,12 +51,15 @@ public class HelloWorldApplication {
             }
 
             sleepMillis += random.nextInt(100);
-            sleepMillis -= random.nextInt(100);
+            sleepMillis -= random.nextInt(200);
 
             privateSleepMethod(sleepMillis);
 
             AtomicLong atomicLong = new AtomicLong(sleepMillis);
             publicSleepMethod(atomicLong);
+
+            ex.publicLoop100();
+//            ex.publicLoop10000();
         }
     }
 

@@ -1,5 +1,7 @@
 package com.uber.profiling.reporters;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,24 +23,23 @@ import com.uber.profiling.util.AgentLogger;
  * reporter. Create "metrics" database in InfluxDB before using this reporter.
  * If you want to use different database name then update the value of "database"
  * property in this class.
- * 
+ * <p>
  * Check the "host" and "port" properties for InfluxDB and update accordingly.
  * If Authentication is enabled in your InfluxDB then update "username" and
  * "password" properties with appropriate values. If Authentication is not
  * enabled then these values will not be used.
- * 
+ * <p>
  * You can also pass database connection properties from yaml file and those
  * properties will be used by this reporter.
- * 
+ * <p>
  * To uses InfluxDBOutputReporter with default database connection properties
  * pass it in command.
- * 
- *     reporter=com.uber.profiling.reporters.InfluxDBOutputReporter
- * 
- * To use database connection properties from yaml file use below command. 
- * 
- *     reporter=com.uber.profiling.reporters.InfluxDBOutputReporter,configProvider=com.uber.profiling.YamlConfigProvider,configFile=/opt/influxdb.yaml
- *
+ * <p>
+ * reporter=com.uber.profiling.reporters.InfluxDBOutputReporter
+ * <p>
+ * To use database connection properties from yaml file use below command.
+ * <p>
+ * reporter=com.uber.profiling.reporters.InfluxDBOutputReporter,configProvider=com.uber.profiling.YamlConfigProvider,configFile=/opt/influxdb.yaml
  */
 public class InfluxDBOutputReporter implements Reporter {
 
@@ -55,18 +56,42 @@ public class InfluxDBOutputReporter implements Reporter {
     public void report(String profilerName, Map<String, Object> metrics) {
         // get DB connection
         ensureInfluxDBCon();
-        // format metrics 
+        Point point = null;
+        // format metrics
         logger.info("Profiler Name : " + profilerName);
         Map<String, Object> formattedMetrics = getFormattedMetrics(metrics);
         for (Map.Entry<String, Object> entry : formattedMetrics.entrySet()) {
             logger.info("Formatted Metric-Name = " + entry.getKey() + ", Metric-Value = " + entry.getValue());
         }
         // Point
-        Point point = Point.measurement(profilerName)
-                .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                .fields(formattedMetrics)
-                .tag("processUuid", (String)metrics.get("processUuid"))
-                .build();
+        if (profilerName.equals("MethodDuration")) {
+            point = Point.measurement(profilerName)
+                    .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                    .fields(formattedMetrics)
+                    .tag("processUuid", (String) metrics.get("processUuid"))
+                    .tag("method", (String) metrics.get("methodName"))
+                    .tag("class", (String) metrics.get("className"))
+                    .tag("host", (String) metrics.get("host"))
+                    .tag("tag", (String) metrics.get("tag"))
+                    .build();
+        } else if (profilerName.equals("Stacktrace")) {
+            point = Point.measurement(profilerName)
+                    .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                    .fields(formattedMetrics)
+                    .tag("processUuid", (String) metrics.get("processUuid"))
+                    .tag("stack", String.join("; ", (List) metrics.get("stacktrace")))
+                    .tag("host", (String) metrics.get("host"))
+                    .tag("tag", (String) metrics.get("tag"))
+                    .build();
+        } else {
+            point = Point.measurement(profilerName)
+                    .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                    .fields(formattedMetrics)
+                    .tag("processUuid", (String) metrics.get("processUuid"))
+                    .tag("tag", (String) metrics.get("tag"))
+                    .build();
+        }
+
         // BatchPoints
         BatchPoints batchPoints = BatchPoints.database(database)
                 .consistency(ConsistencyLevel.ALL)
@@ -94,16 +119,16 @@ public class InfluxDBOutputReporter implements Reporter {
                     int num = 1;
                     for (Map<String, Object> metricMap : metricList) {
                         String name = null;
-                        if(metricMap.containsKey("name") && metricMap.get("name") != null && metricMap.get("name") instanceof String){
+                        if (metricMap.containsKey("name") && metricMap.get("name") != null && metricMap.get("name") instanceof String) {
                             name = (String) metricMap.get("name");
                             name = name.replaceAll("\\s", "");
                         }
                         for (Map.Entry<String, Object> entry1 : metricMap.entrySet()) {
-                            if(StringUtils.isNotEmpty(name)){
+                            if (StringUtils.isNotEmpty(name)) {
                                 formattedMetrics.put(key + "-" + name + "-" + entry1.getKey(), entry1.getValue());
-                            }else{
+                            } else {
                                 formattedMetrics.put(key + "-" + entry1.getKey() + "-" + num, entry1.getValue());
-                           }
+                            }
                         }
                         num++;
                     }
@@ -124,7 +149,7 @@ public class InfluxDBOutputReporter implements Reporter {
                 }
             } else {
                 formattedMetrics.put(key, value);
-           }
+            }
         }
         return formattedMetrics;
     }
@@ -156,25 +181,25 @@ public class InfluxDBOutputReporter implements Reporter {
     // properties from yaml file
     @Override
     public void updateArguments(Map<String, List<String>> connectionProperties) {
-        for (Map.Entry<String,  List<String>> entry : connectionProperties.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : connectionProperties.entrySet()) {
             String key = entry.getKey();
             List<String> value = entry.getValue();
             if (StringUtils.isNotEmpty(key) && value != null && !value.isEmpty()) {
                 String stringValue = value.get(0);
                 if (key.equals("influxdb.host")) {
-                    logger.info("Got value for host = "+stringValue);
+                    logger.info("Got value for host = " + stringValue);
                     this.host = stringValue;
                 } else if (key.equals("influxdb.port")) {
-                    logger.info("Got value for port = "+stringValue);
+                    logger.info("Got value for port = " + stringValue);
                     this.port = stringValue;
                 } else if (key.equals("influxdb.database")) {
-                    logger.info("Got value for database = "+stringValue);
+                    logger.info("Got value for database = " + stringValue);
                     this.database = stringValue;
                 } else if (key.equals("influxdb.username")) {
-                    logger.info("Got value for username = "+stringValue);
+                    logger.info("Got value for username = " + stringValue);
                     this.username = stringValue;
                 } else if (key.equals("influxdb.password")) {
-                    logger.info("Got value for password = "+stringValue);
+                    logger.info("Got value for password = " + stringValue);
                     this.password = stringValue;
                 }
             }
