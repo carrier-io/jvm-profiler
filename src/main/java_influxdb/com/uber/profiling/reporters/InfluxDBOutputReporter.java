@@ -72,7 +72,7 @@ public class InfluxDBOutputReporter implements Reporter {
                     .tag("method", (String) metrics.get("methodName"))
                     .tag("class", (String) metrics.get("className"))
                     .tag("host", (String) metrics.get("host"))
-                    .tag("tag", (String) metrics.get("tag"))
+                    .tag("service_name", (String) metrics.get("tag"))
                     .build();
         } else if (profilerName.equals("Stacktrace")) {
             point = Point.measurement(profilerName)
@@ -81,14 +81,14 @@ public class InfluxDBOutputReporter implements Reporter {
                     .tag("processUuid", (String) metrics.get("processUuid"))
                     .tag("stack", String.join("; ", (List) metrics.get("stacktrace")))
                     .tag("host", (String) metrics.get("host"))
-                    .tag("tag", (String) metrics.get("tag"))
+                    .tag("service_name", (String) metrics.get("tag"))
                     .build();
         } else {
             point = Point.measurement(profilerName)
                     .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                     .fields(formattedMetrics)
                     .tag("processUuid", (String) metrics.get("processUuid"))
-                    .tag("tag", (String) metrics.get("tag"))
+                    .tag("service_name", (String) metrics.get("tag"))
                     .build();
         }
 
