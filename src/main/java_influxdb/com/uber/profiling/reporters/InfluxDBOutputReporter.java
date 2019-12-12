@@ -58,11 +58,11 @@ public class InfluxDBOutputReporter implements Reporter {
         ensureInfluxDBCon();
         Point point = null;
         // format metrics
-        logger.info("Profiler Name : " + profilerName);
+        //logger.info("Profiler Name : " + profilerName);
         Map<String, Object> formattedMetrics = getFormattedMetrics(metrics);
-        for (Map.Entry<String, Object> entry : formattedMetrics.entrySet()) {
-            logger.info("Formatted Metric-Name = " + entry.getKey() + ", Metric-Value = " + entry.getValue());
-        }
+        //for (Map.Entry<String, Object> entry : formattedMetrics.entrySet()) {
+        //    logger.info("Formatted Metric-Name = " + entry.getKey() + ", Metric-Value = " + entry.getValue());
+        //}
         // Point
         if (profilerName.equals("MethodDuration")) {
             point = Point.measurement(profilerName)
@@ -108,7 +108,7 @@ public class InfluxDBOutputReporter implements Reporter {
         for (Map.Entry<String, Object> entry : metrics.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            logger.info("Raw Metric-Name = " + key + ", Metric-Value = " + value);
+          //  logger.info("Raw Metric-Name = " + key + ", Metric-Value = " + value);
             if (value != null && value instanceof List) {
                 List listValue = (List) value;
                 if (!listValue.isEmpty() && listValue.get(0) instanceof String) {
@@ -168,13 +168,13 @@ public class InfluxDBOutputReporter implements Reporter {
                 return;
             }
             String url = "http://" + host + ":" + port;
-            logger.info("Trying to connect InfluxDB using url=" + url + ", database=" + database + ", username="
-                    + username + ", password=" + password);
+            //logger.info("Trying to connect InfluxDB using url=" + url + ", database=" + database + ", username="
+              //      + username + ", password=" + password);
             this.influxDB = InfluxDBFactory.connect(url, username, password);
             // enable batch
             this.influxDB.enableBatch(BatchOptions.DEFAULTS);
             // set log level
-            influxDB.setLogLevel(InfluxDB.LogLevel.BASIC);
+            influxDB.setLogLevel(InfluxDB.LogLevel.NONE);
         }
     }
 
@@ -187,19 +187,19 @@ public class InfluxDBOutputReporter implements Reporter {
             if (StringUtils.isNotEmpty(key) && value != null && !value.isEmpty()) {
                 String stringValue = value.get(0);
                 if (key.equals("influxdb.host")) {
-                    logger.info("Got value for host = " + stringValue);
+                //    logger.info("Got value for host = " + stringValue);
                     this.host = stringValue;
                 } else if (key.equals("influxdb.port")) {
-                    logger.info("Got value for port = " + stringValue);
+                  //  logger.info("Got value for port = " + stringValue);
                     this.port = stringValue;
                 } else if (key.equals("influxdb.database")) {
-                    logger.info("Got value for database = " + stringValue);
+                    //logger.info("Got value for database = " + stringValue);
                     this.database = stringValue;
                 } else if (key.equals("influxdb.username")) {
-                    logger.info("Got value for username = " + stringValue);
+                    //logger.info("Got value for username = " + stringValue);
                     this.username = stringValue;
                 } else if (key.equals("influxdb.password")) {
-                    logger.info("Got value for password = " + stringValue);
+                    //logger.info("Got value for password = " + stringValue);
                     this.password = stringValue;
                 }
             }

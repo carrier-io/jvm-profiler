@@ -47,12 +47,12 @@ public class JavaAgentFileTransformer implements ClassFileTransformer {
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
         try {
             if (className == null || className.isEmpty()) {
-                logger.debug("Hit null or empty class name");
+            //    logger.debug("Hit null or empty class name");
                 return null;
             }
             return transformImpl(loader, className, classfileBuffer);
         } catch (Throwable ex) {
-            logger.warn("Failed to transform class " + className, ex);
+          //  logger.warn("Failed to transform class " + className, ex);
             return classfileBuffer;
         }
     }
@@ -64,7 +64,7 @@ public class JavaAgentFileTransformer implements ClassFileTransformer {
         }
 
         String normalizedClassName = className.replaceAll("/", ".");
-        logger.debug("Checking class for transform: " + normalizedClassName);
+        //logger.debug("Checking class for transform: " + normalizedClassName);
 
         if (!durationProfilingFilter.matchClass(normalizedClassName)
                 && !argumentFilterProfilingFilter.matchClass(normalizedClassName)) {
@@ -73,7 +73,7 @@ public class JavaAgentFileTransformer implements ClassFileTransformer {
 
         byte[] byteCode;
 
-        logger.info("Transforming class: " + normalizedClassName);
+        //logger.info("Transforming class: " + normalizedClassName);
 
         try {
             ClassPool classPool = new ClassPool();
@@ -95,7 +95,7 @@ public class JavaAgentFileTransformer implements ClassFileTransformer {
 
         } catch (Throwable ex) {
             ex.printStackTrace();
-            logger.warn("Failed to transform class: " + normalizedClassName, ex);
+            //logger.warn("Failed to transform class: " + normalizedClassName, ex);
             byteCode = null;
         }
 
@@ -104,7 +104,7 @@ public class JavaAgentFileTransformer implements ClassFileTransformer {
 
     private void transformMethod(String normalizedClassName, CtMethod method, boolean enableDurationProfiling, List<Integer> argumentsForProfile) {
         if (method.isEmpty()) {
-            logger.info("Ignored empty class method: " + method.getLongName());
+            //logger.info("Ignored empty class method: " + method.getLongName());
             return;
         }
 
@@ -153,10 +153,10 @@ public class JavaAgentFileTransformer implements ClassFileTransformer {
                         "}");
             }
 
-            logger.info("Transformed class method: " + method.getLongName() + ", durationProfiling: " + enableDurationProfiling + ", argumentProfiling: " + argumentsForProfile);
+            //logger.info("Transformed class method: " + method.getLongName() + ", durationProfiling: " + enableDurationProfiling + ", argumentProfiling: " + argumentsForProfile);
         } catch (Throwable ex) {
             ex.printStackTrace();
-            logger.warn("Failed to transform class method: " + method.getLongName(), ex);
+            //logger.warn("Failed to transform class method: " + method.getLongName(), ex);
         }
     }
 }
