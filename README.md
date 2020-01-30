@@ -1,7 +1,5 @@
 # Uber JVM Profiler
 
-[![Build Status](https://api.travis-ci.org/uber-common/jvm-profiler.svg)](https://travis-ci.org/uber-common/jvm-profiler/)
-
 Uber JVM Profiler provides a Java Agent to collect various metrics and stacktraces for Hadoop/Spark JVM processes 
 in a distributed way, for example, CPU/Memory/IO metrics. 
 
@@ -10,9 +8,6 @@ the user code without user code change requirement. This feature could be used t
 for each Spark application and identify bottleneck of name node. It could also trace the HDFS file paths each Spark 
 application reads or writes and identify hot files for further optimization.
 
-This profiler is initially created to profile Spark applications which usually have dozens of or hundreds of 
-processes/machines for a single application, so people could easily correlate metrics of these different 
-processes/machines. It is also a generic Java Agent and could be used for any JVM process as well.
 
 ## How to Build
 
