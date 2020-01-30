@@ -1,0 +1,2360 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar Gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "6.4.4"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1574700065967,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "bars": false,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_INFLUXDB}",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 33,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null as zero",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.4.4",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": true,
+      "targets": [
+        {
+          "alias": "$tag_method",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT max(metricValue) FROM MethodDuration WHERE \"processUuid\" =~ /^$executorProcessUuid$/ AND \"metricName\"='duration.sum' and \"tag\"=~ /^$service_tag$/  and \"host\"=~ /^$host$/ and \"methodName\"=~ /^$method$/ and \"class\"=~ /^$class$/ and $timeFilter group by time($aggregation), method fill(0)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Method Duration over Time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "id": 28,
+      "links": [],
+      "options": {
+        "displayMode": "lcd",
+        "fieldOptions": {
+          "calcs": [
+            "max"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 200,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 20000
+              }
+            ],
+            "unit": "ms"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.4.4",
+      "targets": [
+        {
+          "alias": "$tag_method; $tag_class",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT max(metricValue) FROM MethodDuration WHERE \"processUuid\" =~ /^$executorProcessUuid$/ AND \"metricName\"='duration.sum' and \"tag\"=~ /^$service_tag$/ and \"host\"=~ /^$host$/ and \"methodName\"=~ /^$method$/ and \"class\"=~ /^$class$/ and $timeFilter group by method,* fill(none) order by asc slimit 10",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Executor IO",
+      "type": "bargauge"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "${DS_INFLUXDB}",
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "id": 34,
+      "links": [],
+      "options": {
+        "displayMode": "lcd",
+        "fieldOptions": {
+          "calcs": [
+            "max"
+          ],
+          "defaults": {
+            "mappings": [],
+            "max": 2000000,
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "light-blue",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 20000
+              }
+            ]
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal"
+      },
+      "pluginVersion": "6.4.4",
+      "targets": [
+        {
+          "alias": "$tag_method; $tag_class",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(metricValue) FROM MethodDuration WHERE \"processUuid\" =~ /^$executorProcessUuid$/ AND \"metricName\"='duration.count' and \"tag\"=~ /^$service_tag$/ and \"host\"=~ /^$host$/ and \"methodName\"=~ /^$method$/ and \"class\"=~ /^$class$/ and $timeFilter group by method,* fill(none) order by asc slimit 10",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Executor IO",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${DS_INFLUXDB}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 38,
+      "panels": [
+        {
+          "columns": [],
+          "datasource": "${DS_INFLUXDB}",
+          "fontSize": "100%",
+          "gridPos": {
+            "h": 14,
+            "w": 24,
+            "x": 0,
+            "y": 27
+          },
+          "id": 6,
+          "links": [],
+          "options": {},
+          "pageSize": null,
+          "showHeader": true,
+          "sort": {
+            "col": 1,
+            "desc": true
+          },
+          "styles": [
+            {
+              "alias": "Time",
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "pattern": "Time",
+              "type": "hidden"
+            },
+            {
+              "alias": "Stacktrace",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "dateFormat": "YYYY-MM-DD HH:mm:ss",
+              "decimals": 2,
+              "link": false,
+              "mappingType": 1,
+              "pattern": "stack",
+              "preserveFormat": false,
+              "sanitize": true,
+              "thresholds": [],
+              "type": "string",
+              "unit": "ms"
+            },
+            {
+              "alias": "Calls",
+              "colorMode": null,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "decimals": 2,
+              "pattern": "sum",
+              "thresholds": [],
+              "type": "number",
+              "unit": "hertz"
+            }
+          ],
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": " select sum(count) from Stacktrace where  \"processUuid\" =~ /^$executorProcessUuid$/ and \"stacktrace\"=~ /$method/ and  \"stacktrace\"=~ /$class/ AND stacktrace != '' and $timeFilter and \"tag\"=~ /^$service_tag$/ and \"host\"=~ /^$host$/ group by stack",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "table",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Stacktrace",
+          "transform": "table",
+          "type": "table"
+        }
+      ],
+      "title": "Stacktrace",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${DS_INFLUXDB}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "id": 36,
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "datasource": "${DS_INFLUXDB}",
+          "gridPos": {
+            "h": 7,
+            "w": 5,
+            "x": 0,
+            "y": 41
+          },
+          "id": 32,
+          "links": [],
+          "options": {
+            "fieldOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "defaults": {
+                "mappings": [
+                  {
+                    "id": 0,
+                    "op": "=",
+                    "text": "N/A",
+                    "type": 1,
+                    "value": "null"
+                  }
+                ],
+                "max": 100,
+                "min": 0,
+                "nullValueMode": "connected",
+                "thresholds": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ],
+                "unit": "percent"
+              },
+              "override": {},
+              "values": false
+            },
+            "orientation": "horizontal",
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "6.4.4",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"systemCpuLoad\" as \"System CPU\" from \"CpuAndMemory\"  where \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "System CPU Load",
+          "type": "gauge"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": "${DS_INFLUXDB}",
+          "gridPos": {
+            "h": 7,
+            "w": 5,
+            "x": 6,
+            "y": 41
+          },
+          "id": 23,
+          "links": [],
+          "options": {
+            "fieldOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "defaults": {
+                "mappings": [
+                  {
+                    "id": 0,
+                    "op": "=",
+                    "text": "N/A",
+                    "type": 1,
+                    "value": "null"
+                  }
+                ],
+                "max": 0.8,
+                "min": 0,
+                "nullValueMode": "connected",
+                "thresholds": [
+                  {
+                    "color": "#299c46",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 0.5
+                  },
+                  {
+                    "color": "#d44a3a",
+                    "value": 0.8
+                  }
+                ],
+                "unit": "percentunit"
+              },
+              "override": {},
+              "values": false
+            },
+            "orientation": "horizontal",
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "6.4.4",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"processCpuLoad\" as process from \"CpuAndMemory\"  where \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "title": "Driver Current Process CPU Load",
+          "type": "gauge"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": "${DS_INFLUXDB}",
+          "gridPos": {
+            "h": 7,
+            "w": 5,
+            "x": 12,
+            "y": 41
+          },
+          "id": 21,
+          "links": [],
+          "options": {
+            "fieldOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "defaults": {
+                "mappings": [
+                  {
+                    "id": 0,
+                    "op": "=",
+                    "text": "N/A",
+                    "type": 1,
+                    "value": "null"
+                  }
+                ],
+                "max": 1048000000,
+                "min": 0,
+                "nullValueMode": "connected",
+                "thresholds": [
+                  {
+                    "color": "#299c46",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 500000000
+                  },
+                  {
+                    "color": "#d44a3a",
+                    "value": 1048000000
+                  }
+                ],
+                "unit": "decbytes"
+              },
+              "override": {},
+              "values": false
+            },
+            "orientation": "horizontal",
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "6.4.4",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"heapMemoryTotalUsed\" as Used from \"CpuAndMemory\"  where  \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "title": "Executor Current Heap Used",
+          "type": "gauge"
+        },
+        {
+          "cacheTimeout": null,
+          "datasource": "${DS_INFLUXDB}",
+          "gridPos": {
+            "h": 7,
+            "w": 5,
+            "x": 19,
+            "y": 41
+          },
+          "id": 20,
+          "links": [],
+          "options": {
+            "fieldOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "defaults": {
+                "mappings": [
+                  {
+                    "id": 0,
+                    "op": "=",
+                    "text": "N/A",
+                    "type": 1,
+                    "value": "null"
+                  }
+                ],
+                "max": 1048000000,
+                "min": 0,
+                "nullValueMode": "connected",
+                "thresholds": [
+                  {
+                    "color": "#299c46",
+                    "value": null
+                  },
+                  {
+                    "color": "rgba(237, 129, 40, 0.89)",
+                    "value": 500000000
+                  },
+                  {
+                    "color": "#d44a3a",
+                    "value": 1048000000
+                  }
+                ],
+                "unit": "decbytes"
+              },
+              "override": {},
+              "values": false
+            },
+            "orientation": "horizontal",
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "pluginVersion": "6.4.4",
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"heapMemoryTotalUsed\" as Used from \"CpuAndMemory\" where  \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "timeFrom": null,
+          "title": "Driver Current Heap Used",
+          "type": "gauge"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 0,
+            "y": 48
+          },
+          "hideTimeOverride": true,
+          "id": 9,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "CpuAndMemory.memoryPools-CodeCache-usageMax",
+              "yaxis": 1
+            },
+            {
+              "alias": "CpuAndMemory.processUuid",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Total Used",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"heapMemoryTotalUsed\" from CpuAndMemory where  \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "Total Commited",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"heapMemoryCommitted\" from CpuAndMemory where \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Heap Used",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "decbytes",
+              "label": null,
+              "logBase": 2,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 8,
+            "y": 48
+          },
+          "hideTimeOverride": true,
+          "id": 27,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "CpuAndMemory.memoryPools-CodeCache-usageMax",
+              "yaxis": 1
+            },
+            {
+              "alias": "CpuAndMemory.processUuid",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "Total Used",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"nonHeapMemoryTotalUsed\" from CpuAndMemory where \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            },
+            {
+              "alias": "Total Commited",
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"nonHeapMemoryCommitted\" from CpuAndMemory where \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Non Heap Used",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "decbytes",
+              "label": null,
+              "logBase": 2,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 16,
+            "y": 48
+          },
+          "hideTimeOverride": true,
+          "id": 18,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "CpuAndMemory.memoryPools-CodeCache-usageMax",
+              "yaxis": 1
+            },
+            {
+              "alias": "CpuAndMemory.processUuid",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"gc-PSMarkSweep-collectionCount\" from CpuAndMemory where \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Driver GC Time",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "ms",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 0,
+            "y": 56
+          },
+          "hideTimeOverride": true,
+          "id": 25,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "CpuAndMemory.memoryPools-CodeCache-usageMax",
+              "yaxis": 1
+            },
+            {
+              "alias": "CpuAndMemory.processUuid",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"memoryPools-PSEdenSpace-usageUsed\" as EdenSpace, \"memoryPools-PSSurvivorSpace-usageUsed\" as  SurvivorSpace, \"memoryPools-TenuredGen-usageUsed\" as  TenuredGen from \"CpuAndMemory\"  where \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Executor Heap Used",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "decbytes",
+              "label": null,
+              "logBase": 2,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 8,
+            "y": 56
+          },
+          "hideTimeOverride": true,
+          "id": 26,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "CpuAndMemory.memoryPools-CodeCache-usageMax",
+              "yaxis": 1
+            },
+            {
+              "alias": "CpuAndMemory.processUuid",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"memoryPools-CodeCache-usageUsed\" as CodeCache, \"memoryPools-CompressedClassSpace-usageUsed\" as  CompressedClassSpace, \"memoryPools-Metaspace-usageUsed\" as  Metaspace from \"CpuAndMemory\"  where  \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Executor Non-Heap Used",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "decbytes",
+              "label": null,
+              "logBase": 2,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 8,
+            "x": 16,
+            "y": 56
+          },
+          "hideTimeOverride": true,
+          "id": 16,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "CpuAndMemory.memoryPools-CodeCache-usageMax",
+              "yaxis": 1
+            },
+            {
+              "alias": "CpuAndMemory.processUuid",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"gc-PSScavenge-collectionTime \" as Cavenge, \"gc-PSMarkSweep-collectionTime\" as  MarkSweep from \"CpuAndMemory\"  where \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Executor GC Time",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "ms",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 7,
+            "x": 0,
+            "y": 64
+          },
+          "hideTimeOverride": true,
+          "id": 12,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "CpuAndMemory.memoryPools-CodeCache-usageMax",
+              "yaxis": 1
+            },
+            {
+              "alias": "CpuAndMemory.processUuid",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"heapMemoryCommitted\" as Committed, \"heapMemoryTotalUsed\" as Used from \"CpuAndMemory\"  where   \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Executor Committed And Used Heap",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "decbytes",
+              "label": null,
+              "logBase": 2,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 8,
+            "x": 7,
+            "y": 64
+          },
+          "hideTimeOverride": true,
+          "id": 13,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "CpuAndMemory.memoryPools-CodeCache-usageMax",
+              "yaxis": 1
+            },
+            {
+              "alias": "CpuAndMemory.processUuid",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"heapMemoryCommitted\" as Committed, \"heapMemoryTotalUsed\" as Used from \"CpuAndMemory\"  where  \"processUuid\" =~ /^$executorProcessUuid$/ AND  $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Driver Committed and Used Heap",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "decbytes",
+              "label": null,
+              "logBase": 2,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_INFLUXDB}",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 9,
+            "x": 15,
+            "y": 64
+          },
+          "hideTimeOverride": true,
+          "id": 15,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideZero": false,
+            "max": true,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "dataLinks": []
+          },
+          "percentage": false,
+          "pointradius": 1,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "CpuAndMemory.memoryPools-CodeCache-usageMax",
+              "yaxis": 1
+            },
+            {
+              "alias": "CpuAndMemory.processUuid",
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "groupBy": [
+                {
+                  "params": [
+                    "$__interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "orderByTime": "ASC",
+              "policy": "default",
+              "query": "select \"bufferPools-direct-memoryUsed\" as Used, \"bufferPools-direct-totalCapacity\" as  Capacity from \"CpuAndMemory\"  where \"processUuid\" =~ /^$executorProcessUuid$/ AND  \"processUuid\" =~ /^$executorProcessUuid$/ AND $timeFilter",
+              "rawQuery": true,
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "value"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": []
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Executor Direct Buffer",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "decimals": null,
+              "format": "deckbytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "JAVA metrics",
+      "type": "row"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 20,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "show tag values from Stacktrace with key = \"processUuid\"",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "executorProcessUuid",
+        "options": [],
+        "query": "show tag values from Stacktrace with key = \"processUuid\"",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "show tag values with key=\"tag\"",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Service",
+        "multi": true,
+        "name": "service_tag",
+        "options": [],
+        "query": "show tag values with key=\"tag\"",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "show tag values with key=\"method\"",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Method Name",
+        "multi": true,
+        "name": "method",
+        "options": [],
+        "query": "show tag values with key=\"method\"",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "show tag values with key=\"class\"",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Class Name",
+        "multi": true,
+        "name": "class",
+        "options": [],
+        "query": "show tag values with key=\"class\"",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDB}",
+        "definition": "show tag values with key=\"host\"",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Host",
+        "multi": true,
+        "name": "host",
+        "options": [],
+        "query": "show tag values with key=\"host\"",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "auto": false,
+        "auto_count": 30,
+        "auto_min": "10s",
+        "current": {
+          "text": "30s",
+          "value": "30s"
+        },
+        "hide": 0,
+        "label": "Aggregation",
+        "name": "aggregation",
+        "options": [
+          {
+            "selected": false,
+            "text": "10s",
+            "value": "10s"
+          },
+          {
+            "selected": false,
+            "text": "20s",
+            "value": "20s"
+          },
+          {
+            "selected": true,
+            "text": "30s",
+            "value": "30s"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "2m",
+            "value": "2m"
+          },
+          {
+            "selected": false,
+            "text": "5m",
+            "value": "5m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          }
+        ],
+        "query": "10s,20s,30s,1m,2m,5m,10m,30m",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Java Application Profiling",
+  "uid": "b2iP-9hiz",
+  "version": 58
+}

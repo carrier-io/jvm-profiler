@@ -33,6 +33,8 @@ public class MethodDurationProfiler extends ProfilerBase implements Profiler {
 
     private Reporter reporter = new ConsoleOutputReporter();
 
+    private String scope;
+
     private long intervalMillis = Constants.DEFAULT_METRIC_INTERVAL;
 
     public MethodDurationProfiler(ClassAndMethodLongMetricBuffer buffer, Reporter reporter) {
@@ -45,12 +47,21 @@ public class MethodDurationProfiler extends ProfilerBase implements Profiler {
         return intervalMillis;
     }
 
+
     public void setIntervalMillis(long intervalMillis) {
         this.intervalMillis = intervalMillis;
     }
 
     public void setReporter(Reporter reporter) {
         this.reporter = reporter;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public String getScope() {
+        return scope;
     }
 
     @Override
@@ -75,6 +86,7 @@ public class MethodDurationProfiler extends ProfilerBase implements Profiler {
             commonMap.put("host", getHostName());
             commonMap.put("processUuid", getProcessUuid());
             commonMap.put("appId", getAppId());
+            commonMap.put("scope", getScope());
 
             commonMap.put("className", entry.getKey().getClassName());
             commonMap.put("methodName", entry.getKey().getMethodName());

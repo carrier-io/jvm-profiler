@@ -158,6 +158,7 @@ public class AgentImpl {
 
             MethodDurationProfiler methodDurationProfiler = new MethodDurationProfiler(classAndMethodMetricBuffer, reporter);
             methodDurationProfiler.setTag(tag);
+            methodDurationProfiler.setScope(arguments.getDurationProfiling().toString());
             methodDurationProfiler.setCluster(cluster);
             methodDurationProfiler.setIntervalMillis(metricInterval);
             methodDurationProfiler.setProcessUuid(processUuid);

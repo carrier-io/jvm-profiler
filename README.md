@@ -17,86 +17,22 @@ processes/machines. It is also a generic Java Agent and could be used for any JV
 ## How to Build
 
 1. Make sure JDK 8+ and maven is installed on your machine.
-2. Run: `mvn clean package`
+2. Run: `mvn clean install`
 
-This command creates **jvm-profiler.jar** file with the default reporters like ConsoleOutputReporter, FileOutputReporter and KafkaOutputReporter bundled in it. If you want to bundle the custom reporters like RedisOutputReporter or InfluxDBOutputReporter in the jar file then provide the maven profile id for that reporter in the build command. For example to build a jar file with RedisOutputReporter, you can execute `mvn -P redis clean package` command. Please check the pom.xml file for available custom reporters and their profile ids. 
-
-## Example to Run with Spark Application
-
-You could upload jvm-profiler jar file to HDFS so the Spark application executors could access it. Then add configuration like following when launching Spark application:
-
-```
---conf spark.jars=hdfs://hdfs_url/lib/jvm-profiler-1.0.0.jar
---conf spark.executor.extraJavaOptions=-javaagent:jvm-profiler-1.0.0.jar
-```
+This command creates **jvm-profiler.jar** file with the default reporters like ConsoleOutputReporter, FileOutputReporter and KafkaOutputReporter bundled in it. If you want to bundle the custom reporters like RedisOutputReporter or InfluxDBOutputReporter in the jar file then provide the maven profile id for that reporter in the build command. For example to build a jar file with RedisOutputReporter, you can execute `mvn -P redis clean package` command. Please check the pom.xml file for available custom reporters and their profile ids.
 
 ## Example to Run with Java Application
 
-Following command will start the example application with the profiler agent attached, which will report metrics to the console output:
+Following command will start the example application with the profiler agent attached, which will report metrics to the InfluxDB output:
 ```
-java -javaagent:target/jvm-profiler-1.0.0.jar=reporter=com.uber.profiling.reporters.ConsoleOutputReporter,tag=mytag,metricInterval=5000,durationProfiling=com.uber.profiling.examples.HelloWorldApplication.publicSleepMethod,argumentProfiling=com.uber.profiling.examples.HelloWorldApplication.publicSleepMethod.1,sampleInterval=100 -cp target/jvm-profiler-1.0.0.jar com.uber.profiling.examples.HelloWorldApplication
-```
-
-## Example to Run with Executable Jar
-
-Use following command to run jvm profiler with executable jar application.
-```
-java -javaagent:/opt/jvm-profiler/target/jvm-profiler-1.0.0.jar=reporter=com.uber.profiling.reporters.ConsoleOutputReporter,metricInterval=5000,durationProfiling=foo.bar.FooAppication.barMethod,sampleInterval=5000 -jar foo-application.jar
+exec java -noverify -javaagent:"/usr/ms/jvm-profiler-1.0.0.jar"=configProvider=com.uber.profiling.YamlConfigProvider,configFile="/usr/ms/config.yaml" -cp "/usr/ms/jvm-profiler-1.0.0.jar" $BEFORE_JAR -jar $MS_JAR $AFTER_JAR
 ```
 
-## Example to Run with Tomcat
+`"/usr/ms/jvm-profiler-1.0.0.jar"` - path to the profiler .jar file;
 
-Set the jvm profiler in CATALINA_OPTS before starting the tomcat server. Check logs/catalina.out file for metrics.
-```
-export CATALINA_OPTS="$CATALINA_OPTS -javaagent:/opt/jvm-profiler/target/jvm-profiler-1.0.0.jar=reporter=com.uber.profiling.reporters.ConsoleOutputReporter,metricInterval=5000,durationProfiling=foo.bar.FooController.barMethod,sampleInterval=5000"
-```
+`"/usr/ms/config.yaml"` - path to the config.yaml file.
 
-## Example to Run with Spring Boot Maven Plugin
-
-Use following command to use jvm profiler with Spring Boot 2.x. For Spring Boot 1.x use `-Drun.arguments` instead of `-Dspring-boot.run.jvmArguments` in following command.
-```
-mvn spring-boot:run -Dspring-boot.run.jvmArguments="-javaagent:/opt/jvm-profiler/target/jvm-profiler-1.0.0.jar=reporter=com.uber.profiling.reporters.ConsoleOutputReporter,metricInterval=5000,durationProfiling=foo.bar.FooController.barMethod,sampleInterval=5000"
-```
-
-## Send Metrics to Kafka
-
-Uber JVM Profiler supports sending metrics to Kafka. For example,
-
-```
-java -javaagent:target/jvm-profiler-1.0.0.jar=reporter=com.uber.profiling.reporters.KafkaOutputReporter,metricInterval=5000,brokerList=localhost:9092,topicPrefix=profiler_ -cp target/jvm-profiler-1.0.0.jar com.uber.profiling.examples.HelloWorldApplication
-```
-It will send metrics to Kafka topic profiler_CpuAndMemory. See bottom of this document for an example of the metrics.
-
-## Send Metrics to InfluxDB using config file
-
-Uber JVM Profiler supports sending metrics to Kafka. For example,
-
-```
-java -javaagent:target/jvm-profiler-1.0.0.jar=configProvider=com.uber.profiling.YamlConfigProvider,configFile=config.yaml -cp target/jvm-profiler-1.0.0.jar com.uber.profiling.examples.HelloWorldApplication
-```
-It will send metrics to InfluxDB. Just change the InfluxDB parameters in `config.yaml` file. Also you can find Grafana dashboard in `dashboards` folder in this repository.
-
-## More Details
-
-See [JVM Profiler Blog Post](https://eng.uber.com/jvm-profiler/).
-
-## Feature List
-
-Uber JVM Profiler supports following features:
-
-1. Debug memory usage for all your spark application executors, including java heap memory, non-heap memory, native memory (VmRSS, VmHWM), memory pool, and buffer pool (directed/mapped buffer).
-
-2. Debug CPU usage, Garbage Collection time for all spark executors.
-
-3. Debug arbitrary java class methods (how many times they run, how much duration they spend). We call it Duration Profiling.
-
-4. Debug arbitrary java class method call and trace it argument value. We call it Argument Profiling.
-
-5. Do Stacktrack Profiling and generate flamegraph to visualize CPU time spent for the spark application.
-
-6. Debug IO metrics (disk read/write bytes for the application, CPU iowait for the machine).
-
-## Parameter List
+## Configuration
 
 The java agent supports following parameters, which could be used in Java command line like "-javaagent:agent_jar_file.jar=param1=value1,param2=value2":
 
@@ -110,7 +46,7 @@ The java agent supports following parameters, which could be used in Java comman
 
 - metricInterval: how frequent to collect and report the metrics, in milliseconds.
 
-- durationProfiling: configure to profile specific class and method, e.g. com.uber.profiling.examples.HelloWorldApplication.publicSleepMethod. It also support wildcard (*) for method name, e.g. com.uber.profiling.examples.HelloWorldApplication.*.
+- durationProfiling: configure to profile specific class and method, e.g. com.uber.profiling.examples.HelloWorldApplication.publicSleepMethod. It also support wildcard (*) for method name, e.g. com.uber.profiling.examples.HelloWorldApplication.*. Do not provide “com.*” package as the profiler has a “com.uber” package it will try to profile itself and will throw an error.
 
 - argumentProfiling: configure to profile specific method argument, e.g. com.uber.profiling.examples.HelloWorldApplication.publicSleepMethod.1 (".1" means getting value for the first argument and sending out in the reporter).
 
@@ -126,130 +62,59 @@ The java agent supports following parameters, which could be used in Java comman
 
 ## YAML Config File
 
-The parameters could be provided as arguments in java command, or in a YAML config file if you use configProvider=com.uber.profiling.YamlConfigProvider. Following is an example of the YAML config file:
+The parameters could be provided as arguments in java command, or in a YAML config file if you use configProvider=com.uber.profiling.YamlConfigProvider.
+
+Following is an example of the YAML config file:
 
 ```
-reporter: com.uber.profiling.reporters.ConsoleOutputReporter
-metricInterval: 5000
-```
-
-## Metrics Example
-
-Following is an example of CPU and Memory metrics when using ConsoleOutputReporter or KafkaOutputReporter:
-
-```json
-{
-	"nonHeapMemoryTotalUsed": 11890584.0,
-	"bufferPools": [
-		{
-			"totalCapacity": 0,
-			"name": "direct",
-			"count": 0,
-			"memoryUsed": 0
-		},
-		{
-			"totalCapacity": 0,
-			"name": "mapped",
-			"count": 0,
-			"memoryUsed": 0
-		}
-	],
-	"heapMemoryTotalUsed": 24330736.0,
-	"epochMillis": 1515627003374,
-	"nonHeapMemoryCommitted": 13565952.0,
-	"heapMemoryCommitted": 257425408.0,
-	"memoryPools": [
-		{
-			"peakUsageMax": 251658240,
-			"usageMax": 251658240,
-			"peakUsageUsed": 1194496,
-			"name": "Code Cache",
-			"peakUsageCommitted": 2555904,
-			"usageUsed": 1173504,
-			"type": "Non-heap memory",
-			"usageCommitted": 2555904
-		},
-		{
-			"peakUsageMax": -1,
-			"usageMax": -1,
-			"peakUsageUsed": 9622920,
-			"name": "Metaspace",
-			"peakUsageCommitted": 9830400,
-			"usageUsed": 9622920,
-			"type": "Non-heap memory",
-			"usageCommitted": 9830400
-		},
-		{
-			"peakUsageMax": 1073741824,
-			"usageMax": 1073741824,
-			"peakUsageUsed": 1094160,
-			"name": "Compressed Class Space",
-			"peakUsageCommitted": 1179648,
-			"usageUsed": 1094160,
-			"type": "Non-heap memory",
-			"usageCommitted": 1179648
-		},
-		{
-			"peakUsageMax": 1409286144,
-			"usageMax": 1409286144,
-			"peakUsageUsed": 24330736,
-			"name": "PS Eden Space",
-			"peakUsageCommitted": 67108864,
-			"usageUsed": 24330736,
-			"type": "Heap memory",
-			"usageCommitted": 67108864
-		},
-		{
-			"peakUsageMax": 11010048,
-			"usageMax": 11010048,
-			"peakUsageUsed": 0,
-			"name": "PS Survivor Space",
-			"peakUsageCommitted": 11010048,
-			"usageUsed": 0,
-			"type": "Heap memory",
-			"usageCommitted": 11010048
-		},
-		{
-			"peakUsageMax": 2863661056,
-			"usageMax": 2863661056,
-			"peakUsageUsed": 0,
-			"name": "PS Old Gen",
-			"peakUsageCommitted": 179306496,
-			"usageUsed": 0,
-			"type": "Heap memory",
-			"usageCommitted": 179306496
-		}
-	],
-	"processCpuLoad": 0.0008024004394748531,
-	"systemCpuLoad": 0.23138430784607697,
-	"processCpuTime": 496918000,
-	"appId": null,
-	"name": "24103@machine01",
-	"host": "machine01",
-	"processUuid": "3c2ec835-749d-45ea-a7ec-e4b9fe17c23a",
-	"tag": "mytag",
-	"gc": [
-		{
-			"collectionTime": 0,
-			"name": "PS Scavenge",
-			"collectionCount": 0
-		},
-		{
-			"collectionTime": 0,
-			"name": "PS MarkSweep",
-			"collectionCount": 0
-		}
-	]
-}
-```
-
-## Generate flamegraph of Stacktrack Profiling result
-
-We can take the output of Stacktrack Profiling to generate flamegraph to visualize CPU time. Using the Python script `stackcollapse.py`, following command will collapse Stacktrack Profiling json output file to the input file format for generating flamegraph. The script `flamegraph.pl` can be found at [FlameGraph](https://github.com/brendangregg/FlameGraph).
+reporter: com.uber.profiling.reporters.InfluxDBOutputReporter
+tag: ${service_name}
+metricInterval: 1000
+durationProfiling: [com.fasterxml.*, org.*]
+sampleInterval: 1000
+influxdb.host: ${influx_host}
+influxdb.port: 8086
+influxdb.database: profiling
+influxdb.username:
+influxdb.password:
 
 ```
-python stackcollapse.py -i Stacktrace.json > Stacktrace.folded
-flamegraph.pl Stacktrace.folded > Stacktrace.svg
-```
 
-Note that it is required to enable stacktrace sampling, in order to generate flamegraph. To enable it, please set `sampleInterval` parameter. If it is not set or zero, the profiler will not do stacktrace sampling.
+In order to be able to filter data in Grafana dashboard for each service separately, you need to pass ${service_name} variable to config.yaml.
+
+## Send Metrics to InfluxDB using config file
+
+Uber JVM Profiler supports sending metrics to InfluxDB.
+
+It will send metrics to InfluxDB. Just change the InfluxDB parameters in `config.yaml` file.
+
+•	influxdb.host: InfluxDB host DNS or IP
+
+•	influxdb.port: InfluxDB port
+
+•	influxdb.database: database name in which the metrics will be saved
+
+•	influxdb.username: InfluxDB login
+
+•	influx.password: InfluxDB password
+
+
+Also you can find Grafana dashboard in `dashboards` folder in this repository.
+
+## Grafana dashboards
+
+Grafana dashboard allows us to analyze the results for each service individually. To do this, you need to configure a service filter.
+
+First part of the dashboard is a panel with slowest java methods. Each method is a link, if you click on it, a new tab will open a panel with a detailed stacktrace for this method.
+
+This stacktrace is a set of all stacktraces that were performed during a test with this method.
+You can expand them by clicking on the arrow and go all the way from the selected method to the beginning of the stacktrace.
+The red color indicates the path that stacktrace most often follows. Also, on each part of stacktrace there is a percentage ratio of how often this method was executed.
+It may be useful for analysis of non-optimal program execution.
+
+The last part of the dashboard is Java metrics such as CPU usage, heap memory, etc.
+
+
+## More Details
+
+See [JVM Profiler Blog Post](https://eng.uber.com/jvm-profiler/).

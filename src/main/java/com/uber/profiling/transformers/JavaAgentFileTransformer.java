@@ -94,7 +94,7 @@ public class JavaAgentFileTransformer implements ClassFileTransformer {
             ctClass.detach();
 
         } catch (Throwable ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
             //logger.warn("Failed to transform class: " + normalizedClassName, ex);
             byteCode = null;
         }
@@ -155,7 +155,8 @@ public class JavaAgentFileTransformer implements ClassFileTransformer {
 
             //logger.info("Transformed class method: " + method.getLongName() + ", durationProfiling: " + enableDurationProfiling + ", argumentProfiling: " + argumentsForProfile);
         } catch (Throwable ex) {
-            ex.printStackTrace();
+            String exc = ex.toString();
+            //ex.printStackTrace();
             //logger.warn("Failed to transform class method: " + method.getLongName(), ex);
         }
     }

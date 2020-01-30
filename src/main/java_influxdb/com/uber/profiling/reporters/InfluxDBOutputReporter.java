@@ -72,6 +72,7 @@ public class InfluxDBOutputReporter implements Reporter {
                     .tag("method", (String) metrics.get("methodName"))
                     .tag("class", (String) metrics.get("className"))
                     .tag("host", (String) metrics.get("host"))
+                    .tag("scope", (String) metrics.get("scope"))
                     .tag("service_name", (String) metrics.get("tag"))
                     .build();
         } else if (profilerName.equals("Stacktrace")) {
